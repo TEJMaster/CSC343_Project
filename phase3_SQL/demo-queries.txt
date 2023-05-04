@@ -1,0 +1,300 @@
+ -------------------- Loading schema and data: --------------------
+csc343h-tuxiangy=> \i schema.ddl
+psql:schema.ddl:1: NOTICE:  drop cascades to 16 other objects
+DETAIL:  drop cascades to table covidimpact.region
+drop cascades to table covidimpact.subregion
+drop cascades to table covidimpact.country
+drop cascades to table covidimpact.unemployment
+drop cascades to table covidimpact.incomelevel
+drop cascades to table covidimpact.healthcarelevel
+drop cascades to table covidimpact.covid_data
+drop cascades to table covidimpact.import_country_data
+drop cascades to table covidimpact.import_covid_data
+drop cascades to table covidimpact.import_income_level_data
+drop cascades to table covidimpact.import_unemploytment_rate
+drop cascades to view covidimpact.sub_continent_rank
+drop cascades to view covidimpact.sub_continent_high
+drop cascades to view covidimpact.sub_continent_low
+drop cascades to view covidimpact.ur_change
+drop cascades to view covidimpact.sub_continent_impact
+DROP SCHEMA
+CREATE SCHEMA
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+COPY 248
+CREATE TABLE
+COPY 44257
+CREATE TABLE
+COPY 265
+CREATE TABLE
+COPY 266
+INSERT 0 5
+INSERT 0 17
+INSERT 0 248
+INSERT 0 215
+INSERT 0 215
+INSERT 0 209
+INSERT 0 44067
+
+-------------------- Investigative Question 1: ------------------
+csc343h-tuxiangy=> \i queries_q1.txt
+DROP VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+ Corr Coef case vs change 
+--------------------------
+        0.568584249381228
+(1 row)
+
+ Corr Coef death vs change 
+---------------------------
+         0.356399677007127
+(1 row)
+
+csc343h-tuxiangy=> select * from incomelevel_change;
+     incomegroup     |    mean_2019     |    mean_2020     |    mean_change    
+---------------------+------------------+------------------+-------------------
+ Upper middle income | 9.44714285714286 | 10.8220408163265 |  1.37489795918367
+ High income         | 5.68089285714286 | 7.31946428571429 |  1.63857142857143
+ Lower middle income | 6.94415094339623 | 7.79792452830189 |  0.85377358490566
+ Low income          | 5.49148148148148 | 5.92481481481481 | 0.433333333333333
+(4 rows)
+
+
+csc343h-tuxiangy=> select * from Top10_Economies;
+ countrycode | total_cases_per_million 
+-------------+-------------------------
+ CHN         |                  62.743
+ JPN         |                 617.293
+ DEU         |                 3223.41
+ CAN         |                3760.013
+ IND         |                3846.375
+ ITA         |                4877.987
+ GBR         |                 5685.06
+ FRA         |                6567.687
+ USA         |               20316.052
+ BRA         |                21147.89
+(10 rows)
+
+
+csc343h-tuxiangy=> select * from Top10_Change;
+ countrycode | total_cases_per_million | ur_2019 | ur_2020 |     ur_change      
+-------------+-------------------------+---------+---------+--------------------
+ ITA         |                4877.987 |    9.95 |    9.31 | -0.639999999999999
+ FRA         |                6567.687 |    8.44 |    8.62 |               0.18
+ CHN         |                  62.743 |     4.6 |       5 |                0.4
+ JPN         |                 617.293 |     2.4 |    2.97 |               0.57
+ GBR         |                 5685.06 |    3.74 |    4.34 |                0.6
+ DEU         |                 3223.41 |    3.14 |    4.31 |               1.17
+ BRA         |                21147.89 |   11.93 |   13.67 |               1.74
+ IND         |                3846.375 |    5.27 |    7.11 |               1.84
+ CAN         |                3760.013 |    5.66 |    9.48 |               3.82
+ USA         |               20316.052 |    3.67 |    8.31 |               4.64
+(10 rows)
+
+
+
+-------------------- Investigative Question 2: ------------------
+
+csc343h-tuxiangy=> \i queries_q2.txt
+DROP VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+
+ Corr Coef hdi vs change 
+-------------------------
+        0.31435244441355
+(1 row)
+
+ Corr Coef beds vs change 
+--------------------------
+       -0.112521137238556
+(1 row)
+
+ Corr Coef life expectancy vs change 
+-------------------------------------
+                   0.348468811537499
+(1 row)
+
+ Corr Coef covid cases vs hdi 
+------------------------------
+            0.377937421853122
+(1 row)
+
+csc343h-tuxiangy=> select * from TOP25_HDI;
+ per_milliion_cases_avg |  ur_change_avg   
+------------------------+------------------
+       7259.18660465116 | 1.31720930232558
+(1 row)
+
+
+csc343h-tuxiangy=> select * from BOT25_HDI;
+ per_milliion_cases_avg |   ur_change_avg   
+------------------------+-------------------
+       613.574880952381 | 0.534047619047619
+(1 row)
+
+
+-------------------- Investigative Question 3: ------------------
+csc343h-tuxiangy=> \i queries_q3.txt
+DROP VIEW
+psql:queries_q3.txt:9: ERROR:  relation "ur_change" already exists
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+  region  |    avg_change     | highest_cases_per_million 
+----------+-------------------+---------------------------
+ Africa   | 0.572075471698113 |                 11088.206
+ Europe   | 0.837948717948718 |                  7477.233
+ Oceania  |              0.86 |                  1053.377
+ Asia     |            1.1232 |                  3846.375
+ Americas |  2.71030303030303 |                 20316.052
+(5 rows)
+
+ Corr Coef continent cases per million vs change 
+-------------------------------------------------
+                               0.759660089911308
+(1 row)
+
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+CREATE VIEW
+            subregion            |    avg_change     | highest_cases_per_million 
+---------------------------------+-------------------+---------------------------
+ Southern Europe                 | 0.429166666666667 |                  4877.987
+ Sub-Saharan Africa              | 0.508085106382979 |                 11088.206
+ Melanesia                       |             0.514 |                    57.673
+ Eastern Asia                    | 0.591428571428572 |                    62.743
+ Eastern Europe                  |             0.818 |                  7477.233
+ Western Europe                  | 0.842857142857143 |                  6567.687
+ Central Asia                    |             0.844 |                  7350.224
+ South-eastern Asia              | 0.850909090909091 |                   2550.86
+ Australia and New Zealand       |             0.965 |                  1053.377
+ Southern Asia                   |  1.01666666666667 |                  3846.375
+ Polynesia                       |  1.03333333333333 |                  4303.961
+ Northern Africa                 |  1.07333333333333 |                   994.504
+ Northern Europe                 |             1.345 |                   5685.06
+ Western Asia                    |  1.62722222222222 |                  9442.215
+ Micronesia                      |              1.86 |                 12116.149
+ Latin America and the Caribbean |  2.61225806451613 |                  21147.89
+ Northern America                |              4.23 |                 20316.052
+(17 rows)
+
+ Corr Coef sub-continent cases per million vs change 
+-----------------------------------------------------
+                                   0.804201845778836
+(1 row)
+
+csc343h-tuxiangy=> select * from continent_high;
+ countrycode |     name      | regioncode |  region  | total_case | total_cases_per_million 
+-------------+---------------+------------+----------+------------+-------------------------
+ AUS         | Australia     | 9          | Oceania  |      26861 |                1053.377
+ ZAF         | South Africa  | 2          | Africa   |     657627 |               11088.206
+ RUS         | Russia        | 150        | Europe   |    1091186 |                7477.233
+ IND         | India         | 142        | Asia     |    5308014 |                3846.375
+ USA         | United States | 19         | Americas |    6724667 |               20316.052
+(5 rows)
+
+csc343h-tuxiangy=> select * from continent_impact;
+ regioncode |    avg_change     
+------------+-------------------
+ 19         |  2.71030303030303
+ 2          | 0.572075471698113
+ 142        |            1.1232
+ 9          |              0.86
+ 150        | 0.837948717948718
+(5 rows)
+
+csc343h-tuxiangy=> select * from continent_relation;
+ regioncode |    avg_change     | total_cases_per_million 
+------------+-------------------+-------------------------
+ 19         |  2.71030303030303 |               20316.052
+ 2          | 0.572075471698113 |               11088.206
+ 142        |            1.1232 |                3846.375
+ 9          |              0.86 |                1053.377
+ 150        | 0.837948717948718 |                7477.233
+(5 rows)
+
+csc343h-tuxiangy=> select * from sub_continent_high;
+ countrycode |       name       | subregioncode |            subregion            | total_case | total_cases_per_million 
+-------------+------------------+---------------+---------------------------------+------------+-------------------------
+ PNG         | Papua New Guinea | 54            | Melanesia                       |        516 |                  57.673
+ CHN         | China            | 30            | Eastern Asia                    |      90308 |                  62.743
+ EGY         | Egypt            | 15            | Northern Africa                 |     101772 |                 994.504
+ AUS         | Australia        | 53            | Australia and New Zealand       |      26861 |                1053.377
+ PHL         | Philippines      | 35            | South-eastern Asia              |     279526 |                 2550.86
+ IND         | India            | 34            | Southern Asia                   |    5308014 |                3846.375
+ PYF         | French Polynesia | 61            | Polynesia                       |       1209 |                4303.961
+ ITA         | Italy            | 39            | Southern Europe                 |     294932 |                4877.987
+ GBR         | United Kingdom   | 154           | Northern Europe                 |     385936 |                 5685.06
+ FRA         | France           | 155           | Western Europe                  |     428696 |                6567.687
+ KAZ         | Kazakhstan       | 143           | Central Asia                    |     138013 |                7350.224
+ RUS         | Russia           | 151           | Eastern Europe                  |    1091186 |                7477.233
+ SAU         | Saudi Arabia     | 145           | Western Asia                    |     328720 |                9442.215
+ ZAF         | South Africa     | 202           | Sub-Saharan Africa              |     657627 |               11088.206
+ GUM         | Guam             | 57            | Micronesia                      |       2045 |               12116.149
+ USA         | United States    | 21            | Northern America                |    6724667 |               20316.052
+ BRA         | Brazil           | 419           | Latin America and the Caribbean |    4495183 |                21147.89
+(17 rows)
+
+csc343h-tuxiangy=> select * from sub_continent_impact;
+ subregioncode |    avg_change     
+---------------+-------------------
+ 57            |              1.86
+ 145           |  1.62722222222222
+ 54            |             0.514
+ 21            |              4.23
+ 155           | 0.842857142857143
+ 202           | 0.508085106382979
+ 15            |  1.07333333333333
+ 143           |             0.844
+ 30            | 0.591428571428572
+ 35            | 0.850909090909091
+ 39            | 0.429166666666667
+ 154           |             1.345
+ 61            |  1.03333333333333
+ 34            |  1.01666666666667
+ 53            |             0.965
+ 419           |  2.61225806451613
+ 151           |             0.818
+(17 rows)
+
+csc343h-tuxiangy=> select * from sub_continent_relation;
+ subregioncode |    avg_change     | total_cases_per_million 
+---------------+-------------------+-------------------------
+ 57            |              1.86 |               12116.149
+ 145           |  1.62722222222222 |                9442.215
+ 54            |             0.514 |                  57.673
+ 21            |              4.23 |               20316.052
+ 155           | 0.842857142857143 |                6567.687
+ 202           | 0.508085106382979 |               11088.206
+ 15            |  1.07333333333333 |                 994.504
+ 143           |             0.844 |                7350.224
+ 30            | 0.591428571428572 |                  62.743
+ 35            | 0.850909090909091 |                 2550.86
+ 39            | 0.429166666666667 |                4877.987
+ 154           |             1.345 |                 5685.06
+ 61            |  1.03333333333333 |                4303.961
+ 34            |  1.01666666666667 |                3846.375
+ 53            |             0.965 |                1053.377
+ 419           |  2.61225806451613 |                21147.89
+ 151           |             0.818 |                7477.233
+(17 rows)
+

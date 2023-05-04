@@ -1,0 +1,327 @@
+
+dbsrv1:~/343_Phase_2$ psql csc343h-tuxiangy
+psql (10.19 (Ubuntu 10.19-0ubuntu0.18.04.1), server 10.18 (Ubuntu 10.18-0ubuntu0.18.04.1))
+Type "help" for help.
+
+
+--- (a) Load schema and data ---------------------------------------------
+csc343h-tuxiangy=> \i schema.ddl
+psql:schema.ddl:1: NOTICE:  drop cascades to 11 other objects
+DETAIL:  drop cascades to table covidimpact.region
+drop cascades to table covidimpact.subregion
+drop cascades to table covidimpact.country
+drop cascades to table covidimpact.unemployment
+drop cascades to table covidimpact.incomelevel
+drop cascades to table covidimpact.healthcarelevel
+drop cascades to table covidimpact.covid_data
+drop cascades to table covidimpact.import_country_data
+drop cascades to table covidimpact.import_covid_data
+drop cascades to table covidimpact.import_income_level_data
+drop cascades to table covidimpact.import_unemploytment_rate
+DROP SCHEMA
+CREATE SCHEMA
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+COPY 248
+CREATE TABLE
+COPY 44257
+CREATE TABLE
+COPY 265
+CREATE TABLE
+COPY 266
+INSERT 0 5
+INSERT 0 17
+INSERT 0 248
+INSERT 0 215
+INSERT 0 215
+INSERT 0 209
+INSERT 0 44067
+
+
+--- (b) Run \d on each table ---------------------------------------------
+
+csc343h-tuxiangy=> --- (a) Load schema and data ---------------------------------------------
+csc343h-tuxiangy=> \d region
+             Table "covidimpact.region"
+   Column   | Type | Collation | Nullable | Default 
+------------+------+-----------+----------+---------
+ regioncode | text |           | not null | 
+ region     | text |           | not null | 
+Indexes:
+    "region_pkey" PRIMARY KEY, btree (regioncode)
+Referenced by:
+    TABLE "country" CONSTRAINT "country_regioncode_fkey" FOREIGN KEY (regioncode) REFERENCES region(regioncode)
+
+
+csc343h-tuxiangy=> \d SubRegion
+             Table "covidimpact.subregion"
+    Column     | Type | Collation | Nullable | Default 
+---------------+------+-----------+----------+---------
+ subregioncode | text |           | not null | 
+ subregion     | text |           | not null | 
+Indexes:
+    "subregion_pkey" PRIMARY KEY, btree (subregioncode)
+Referenced by:
+    TABLE "country" CONSTRAINT "country_subregioncode_fkey" FOREIGN KEY (subregioncode) REFERENCES subregion(subregioncode)
+
+
+csc343h-tuxiangy=> \d Country
+              Table "covidimpact.country"
+    Column     | Type | Collation | Nullable | Default 
+---------------+------+-----------+----------+---------
+ name          | text |           | not null | 
+ countrycode   | text |           | not null | 
+ regioncode    | text |           | not null | 
+ subregioncode | text |           | not null | 
+Indexes:
+    "country_pkey" PRIMARY KEY, btree (countrycode)
+Foreign-key constraints:
+    "country_regioncode_fkey" FOREIGN KEY (regioncode) REFERENCES region(regioncode)
+    "country_subregioncode_fkey" FOREIGN KEY (subregioncode) REFERENCES subregion(subregioncode)
+Referenced by:
+    TABLE "covid_data" CONSTRAINT "covid_data_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+    TABLE "healthcarelevel" CONSTRAINT "healthcarelevel_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+    TABLE "incomelevel" CONSTRAINT "incomelevel_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+    TABLE "unemployment" CONSTRAINT "unemployment_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+
+
+csc343h-tuxiangy=> \d Unemployment
+            Table "covidimpact.unemployment"
+   Column    |  Type   | Collation | Nullable | Default 
+-------------+---------+-----------+----------+---------
+ countrycode | text    |           | not null | 
+ ur_2019     | integer |           |          | 
+ ur_2020     | integer |           |          | 
+Indexes:
+    "unemployment_pkey" PRIMARY KEY, btree (countrycode)
+Foreign-key constraints:
+    "unemployment_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+
+csc343h-tuxiangy=> \d IncomeLevel
+           Table "covidimpact.incomelevel"
+   Column    | Type | Collation | Nullable | Default 
+-------------+------+-----------+----------+---------
+ countrycode | text |           | not null | 
+ incomegroup | text |           |          | 
+Indexes:
+    "incomelevel_pkey" PRIMARY KEY, btree (countrycode)
+Foreign-key constraints:
+    "incomelevel_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+
+
+csc343h-tuxiangy=> \d HealthCareLevel
+                 Table "covidimpact.healthcarelevel"
+     Column      |       Type       | Collation | Nullable | Default 
+-----------------+------------------+-----------+----------+---------
+ countrycode     | text             |           | not null | 
+ bedsperthousand | double precision |           |          | 
+ lifeexpectancy  | double precision |           |          | 
+ hdi             | double precision |           |          | 
+Indexes:
+    "healthcarelevel_pkey" PRIMARY KEY, btree (countrycode)
+Foreign-key constraints:
+    "healthcarelevel_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+
+
+csc343h-tuxiangy=> \d COVID_Data
+                        Table "covidimpact.covid_data"
+          Column          |       Type       | Collation | Nullable | Default 
+--------------------------+------------------+-----------+----------+---------
+ countrycode              | text             |           | not null | 
+ date_                    | date             |           | not null | 
+ total_cases_per_million  | double precision |           |          | 
+ total_deaths_per_million | double precision |           |          | 
+ total_case               | integer          |           |          | 
+ total_death              | integer          |           |          | 
+Indexes:
+    "covid_data_pkey" PRIMARY KEY, btree (countrycode, date_)
+Foreign-key constraints:
+    "covid_data_countrycode_fkey" FOREIGN KEY (countrycode) REFERENCES country(countrycode)
+
+
+--- (c) Run SELECT count(*) on each table --------------------------------
+
+csc343h-tuxiangy=> select count(*) from Region;
+ count 
+-------
+     5
+(1 row)
+
+csc343h-tuxiangy=> select count(*) from SubRegion;
+ count 
+-------
+    17
+(1 row)
+
+csc343h-tuxiangy=> select count(*) from Country;
+ count 
+-------
+   248
+(1 row)
+
+
+csc343h-tuxiangy=> select count(*) from Unemployment;
+ count 
+-------
+   215
+(1 row)
+
+csc343h-tuxiangy=> select count(*) from IncomeLevel;
+ count 
+-------
+   215
+(1 row)
+
+csc343h-tuxiangy=> select count(*) from HealthCareLevel;
+ count 
+-------
+   209
+(1 row)
+
+csc343h-tuxiangy=> select count(*) from COVID_Data;
+ count 
+-------
+ 44067
+(1 row)
+
+
+--- (d) Show some rows from each table -----------------------------------
+
+csc343h-tuxiangy=> select * from Region;
+ regioncode |  region  
+------------+----------
+ 150        | Europe
+ 142        | Asia
+ 9          | Oceania
+ 2          | Africa
+ 19         | Americas
+(5 rows)
+
+csc343h-tuxiangy=> select * from SubRegion;
+ subregioncode |            subregion            
+---------------+---------------------------------
+ 151           | Eastern Europe
+ 202           | Sub-Saharan Africa
+ 15            | Northern Africa
+ 154           | Northern Europe
+ 155           | Western Europe
+ 54            | Melanesia
+ 61            | Polynesia
+ 39            | Southern Europe
+ 143           | Central Asia
+ 53            | Australia and New Zealand
+ 145           | Western Asia
+ 21            | Northern America
+ 419           | Latin America and the Caribbean
+ 34            | Southern Asia
+ 35            | South-eastern Asia
+ 57            | Micronesia
+ 30            | Eastern Asia
+(17 rows)
+
+csc343h-tuxiangy=> select * from Country where subRegionCode = '151';
+      name      | countrycode | regioncode | subregioncode 
+----------------+-------------+------------+---------------
+ Belarus        | BLR         | 150        | 151
+ Bulgaria       | BGR         | 150        | 151
+ Czech Republic | CZE         | 150        | 151
+ Hungary        | HUN         | 150        | 151
+ Moldova        | MDA         | 150        | 151
+ Poland         | POL         | 150        | 151
+ Romania        | ROU         | 150        | 151
+ Russia         | RUS         | 150        | 151
+ Slovakia       | SVK         | 150        | 151
+ Ukraine        | UKR         | 150        | 151
+(10 rows)
+
+csc343h-tuxiangy=> select * from Unemployment where UR_2019 < 2;
+ countrycode | ur_2019 | ur_2020 
+-------------+---------+---------
+ BDI         |    1.42 |     0.8
+ BHR         |    1.56 |    4.09
+ CUB         |    1.67 |    3.87
+ KHM         |    0.13 |    0.31
+ LAO         |    0.62 |    0.95
+ MAC         |     1.7 |     2.5
+ MDG         |    1.67 |    1.92
+ MMR         |     0.5 |    1.79
+ NER         |    0.46 |    0.69
+ OMN         |    1.84 |    4.97
+ QAT         |    0.12 |    3.45
+ RWA         |    0.99 |    1.35
+ SLB         |     0.6 |    0.79
+ TCD         |    1.91 |    2.26
+ THA         |    0.72 |    1.02
+ TZA         |    1.96 |    2.16
+ UGA         |    1.72 |    2.44
+ VUT         |    1.69 |    1.95
+(18 rows)
+
+csc343h-tuxiangy=> select * from IncomeLevel where incomeGroup = 'Low income';
+countrycode | incomegroup 
+-------------+-------------
+ AFG         | Low income
+ BDI         | Low income
+ BFA         | Low income
+ CAF         | Low income
+ COD         | Low income
+ ERI         | Low income
+ ETH         | Low income
+ GIN         | Low income
+ GMB         | Low income
+ GNB         | Low income
+ LBR         | Low income
+ MDG         | Low income
+ MLI         | Low income
+ MOZ         | Low income
+ MWI         | Low income
+ NER         | Low income
+ PRK         | Low income
+ RWA         | Low income
+ SDN         | Low income
+ SLE         | Low income
+ SOM         | Low income
+ SSD         | Low income
+ SYR         | Low income
+ TCD         | Low income
+ TGO         | Low income
+ UGA         | Low income
+ YEM         | Low income
+(27 rows)
+
+csc343h-tuxiangy=> select * from HealthCareLevel where lifeExpectancy > 83;
+ countrycode | bedsperthousand | lifeexpectancy |  hdi  
+-------------+-----------------+----------------+-------
+ SMR         |             3.8 |          84.97 |      
+ ITA         |            3.18 |          83.51 |  0.88
+ JPN         |           13.05 |          84.63 | 0.909
+ MCO         |            13.8 |          86.75 |      
+ AND         |                 |          83.73 | 0.858
+ AUS         |            3.84 |          83.44 | 0.939
+ CYM         |                 |          83.92 |      
+ HKG         |                 |          84.86 | 0.933
+ KOR         |           12.27 |          83.03 | 0.903
+ SGP         |             2.4 |          83.62 | 0.932
+ CHE         |            4.53 |          83.78 | 0.944
+ ESP         |            2.97 |          83.56 | 0.891
+(12 rows)
+
+csc343h-tuxiangy=> select * from COVID_Data where date_ = '2020-09-01' and total_case > 500000;
+ countrycode |   date_    | total_cases_per_million | total_deaths_per_million | total_case | total_death 
+-------------+------------+-------------------------+--------------------------+------------+-------------
+ BRA         | 2020-09-01 |               18386.728 |                  571.045 |    3908272 |      121381
+ COL         | 2020-09-01 |               12089.881 |                  386.436 |     615168 |       19663
+ IND         | 2020-09-01 |                2674.749 |                   47.267 |    3691166 |       65228
+ MEX         | 2020-09-01 |                4650.176 |                  499.594 |     599560 |       64414
+ PER         | 2020-09-01 |               19775.569 |                   877.84 |     652037 |       28944
+ RUS         | 2020-09-01 |                6820.315 |                  117.697 |     995319 |       17176
+ ZAF         | 2020-09-01 |               10572.498 |                  238.565 |     627041 |       14149
+ USA         | 2020-09-01 |               18220.437 |                  554.672 |    6031013 |      183598
+(8 rows)
