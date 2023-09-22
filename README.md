@@ -1,4 +1,4 @@
-# 343_Project
+# CSC343_Project
 SQL Project for CSC343 Database
 
 ## Project Title: Global Countries Under the Pandemic: An Analysis of Economic Impact
